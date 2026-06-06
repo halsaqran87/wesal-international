@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --blue-dark:  #1a3a5c;
+  --blue-mid:   #2a6090;
+  --blue-light: #4a90c4;
+  --blue-pale:  #b8d8ec;
+  --blue-bg:    #eef4fa;
+  --off-white:  #f7fafd;
+  --green:      #2a9a6a;
+  --amber:      #e0a030;
+  --red:        #e05050;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--off-white);
+  color: var(--blue-dark);
+}
+
+/* RTL / LTR switching */
+[dir="ltr"] { font-family: 'Montserrat', sans-serif; }
+[dir="rtl"] { font-family: 'Tajawal', sans-serif; }
+
+/* Smooth transitions */
+* { transition-property: color, background-color, border-color, opacity;
+    transition-duration: 150ms; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--blue-bg); }
+::-webkit-scrollbar-thumb { background: var(--blue-pale); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--blue-light); }
