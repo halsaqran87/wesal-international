@@ -9,7 +9,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnon)
 // ── Server-side admin client ──────────────────────────────
 export const supabaseAdmin = createClient(
   supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? supabaseAnon,
   { auth: { autoRefreshToken: false, persistSession: false } }
 )
 
@@ -44,48 +44,4 @@ export interface Booking {
   daily_room_url: string | null
   booking_ref: string
   created_at: string
-}
-
-export interface Survey {
-  id: string
-  client_id: string
-  booking_id: string | null
-  type: 'intake' | 'post_session'
-  answers: Record<string, unknown>
-  stress_score: number | null
-  created_at: string
-}
-
-export interface SessionNote {
-  id: string
-  booking_id: string
-  consultant_id: string
-  client_id: string
-  content: string
-  is_ai_assisted: boolean
-  created_at: string
-}
-
-export interface MoodEntry {
-  id: string
-  client_id: string
-  mood: 1 | 2 | 3 | 4
-  note: string | null
-  recorded_at: string
-}
-
-export interface JournalEntry {
-  id: string
-  client_id: string
-  content: string
-  mood: string
-  created_at: string
-}
-
-export interface Progress {
-  id: string
-  client_id: string
-  dimension: string
-  score: number
-  updated_at: string
 }
