@@ -30,11 +30,12 @@ export async function GET(req: NextRequest) {
   for (const booking of upcoming24h || []) {
     const client = booking.profiles
     if (!client) continue
-    const lang = client.language === 'en' ? 'en' : 'ar'
+    const lang = (client.language === 'en' ? 'en' : 'ar') as 'ar' | 'en'
     const date = new Date(booking.scheduled_at).toLocaleDateString(lang === 'ar' ? 'ar-KW' : 'en-US', { weekday:'long', month:'long', day:'numeric' })
     const time = new Date(booking.scheduled_at).toLocaleTimeString(lang === 'ar' ? 'ar-KW' : 'en-US', { hour:'2-digit', minute:'2-digit' })
     const method = booking.method === 'video' ? (lang === 'ar' ? 'مكالمة فيديو' : 'Video Call') : 'WhatsApp'
-    const d = { clientName: client.preferred_name, date, time, method, lang }
+    const lang = (client.language === 'en' ? 'en' : 'ar') as 'ar' | 'en'
+const d = { clientName: client.preferred_name, date, time, method, lang }
 
     if (client.email) await send24hrReminder(client.email, { ...d, bookingRef: booking.booking_ref }).catch(console.error)
     if (client.whatsapp) await sendWA24hrReminder(client.whatsapp, d).catch(console.error)
@@ -53,7 +54,7 @@ export async function GET(req: NextRequest) {
   for (const booking of upcoming15m || []) {
     const client = booking.profiles
     if (!client || !booking.daily_room_url) continue
-    const lang = client.language === 'en' ? 'en' : 'ar'
+    const lang = (client.language === 'en' ? 'en' : 'ar') as 'ar' | 'en'
     const time = new Date(booking.scheduled_at).toLocaleTimeString(lang === 'ar' ? 'ar-KW' : 'en-US', { hour:'2-digit', minute:'2-digit' })
     const d = { clientName: client.preferred_name, roomUrl: booking.daily_room_url, time, lang }
 
@@ -73,7 +74,7 @@ export async function GET(req: NextRequest) {
   for (const booking of ended || []) {
     const client = booking.profiles
     if (!client) continue
-    const lang = client.language === 'en' ? 'en' : 'ar'
+    const lang = (client.language === 'en' ? 'en' : 'ar') as 'ar' | 'en'
     const surveyUrl = `${APP_URL}/survey/${booking.id}`
     const d = { clientName: client.preferred_name, surveyUrl, lang }
 
