@@ -1,8 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/reminders?secret=YOUR_CRON_SECRET",
-      "schedule": "*/0 * * * *"
+      "path": "/api/reminders?secret=wesal2025secret",
+      "schedule": "0 * * * *"
     }
   ]
 }
