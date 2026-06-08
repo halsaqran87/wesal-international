@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/reminders?secret=wesal2025secret",
-      "schedule": "0 * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
