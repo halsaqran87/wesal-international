@@ -63,7 +63,7 @@ export default function HomePage() {
     m2_p:           isAr ? 'صوتية أو مرئية عبر واتساب' : 'Voice or video via WhatsApp',
     footer_desc:    isAr ? 'خدمات إرشاد نفسي واجتماعي وإعادة تأهيل سلوكي عبر الإنترنت. مرخصة في الكويت.' : 'Professional online counseling and behavioral rehabilitation. Licensed in Kuwait.',
     footer_lic:     isAr ? 'مرخصة من وزارة التجارة والصناعة — الكويت' : 'Licensed by Ministry of Commerce & Industry — Kuwait',
-    footer_crn:     isAr ? 'السجل التجاري: 6169403'   : 'Commercial Reg: 6169403',
+    footer_crn:     isAr ? 'الرقم التجاري: 6169403'   : 'Commercial Reg: 6169403',
     rights:         isAr ? '© 2025 وصال الدولية للاستشارات الاجتماعية' : '© 2025 Wesal International for Social Consultations',
   }
 
@@ -143,6 +143,9 @@ export default function HomePage() {
           <button onClick={()=>setLang(isAr?'en':'ar')} style={{background:'#eef4fa',border:'1px solid #b8d8ec',color:'#2a6090',fontSize:12,fontWeight:600,padding:'7px 14px',borderRadius:20,cursor:'pointer',fontFamily:'inherit'}}>
             {isAr ? 'English' : 'العربية'}
           </button>
+          <a href="/login" style={{background:'white',color:'#2a6090',padding:'9px 18px',borderRadius:25,fontSize:13,fontWeight:600,textDecoration:'none',border:'2px solid #b8d8ec'}}>
+            {isAr ? 'دخول' : 'Login'}
+          </a>
           <a href="/book" style={{background:'#2a6090',color:'white',padding:'9px 20px',borderRadius:25,fontSize:13,fontWeight:600,textDecoration:'none'}}>
             {t.nav_book}
           </a>
