@@ -19,16 +19,32 @@ export default function LoginPage() {
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       )
+
+      // Sign in
       const { data, error: err } = await sb.auth.signInWithPassword({ email, password })
       if (err || !data.user) {
         setError(isAr ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : 'Invalid email or password')
         setLoading(false)
         return
       }
-      const { data: profile } = await sb.from('profiles').select('role').eq('id', data.user.id).single()
-      window.location.href = profile?.role === 'consultant' ? '/consultant' : '/dashboard'
-    } catch {
-      setError(isAr ? 'حدث خطأ، حاول مرة أخرى' : 'An error occurred, please try again')
+
+      // Get role via server API (bypasses RLS)
+      const res = await fetch('/api/role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: data.user.id })
+      })
+      const { role } = await res.json()
+
+      // Redirect based on role
+      if (role === 'consultant') {
+        window.location.href = '/consultant'
+      } else {
+        window.location.href = '/dashboard'
+      }
+    } catch (e) {
+      console.error(e)
+      setError(isAr ? 'حدث خطأ، حاول مرة أخرى' : 'An error occurred')
       setLoading(false)
     }
   }
@@ -63,21 +79,25 @@ export default function LoginPage() {
             <p style={{fontSize:14,color:'#7a9ab8'}}>{isAr?'مرحباً بعودتك إلى وصال':'Welcome back to Wesal'}</p>
           </div>
 
-          {error && <div style={{background:'#fef0f0',border:'1px solid rgba(224,80,80,.2)',borderRadius:10,padding:'12px 16px',marginBottom:20,fontSize:13,color:'#e05050',textAlign:'center'}}>⚠️ {error}</div>}
+          {error && (
+            <div style={{background:'#fef0f0',border:'1px solid rgba(224,80,80,.2)',borderRadius:10,padding:'12px 16px',marginBottom:20,fontSize:13,color:'#e05050',textAlign:'center'}}>
+              ⚠️ {error}
+            </div>
+          )}
 
           <form onSubmit={handleLogin} style={{display:'flex',flexDirection:'column',gap:18}}>
             <div>
               <label style={{fontSize:12,fontWeight:600,color:'#3a5a7a',display:'block',marginBottom:6}}>{isAr?'البريد الإلكتروني':'Email Address'}</label>
-              <input type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="example@email.com" style={inp}/>
+              <input type="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="example@email.com" style={inp}
+                onFocus={e=>e.target.style.borderColor='#2a6090'} onBlur={e=>e.target.style.borderColor='#b8d8ec'}/>
             </div>
             <div>
-              <div style={{display:'flex',justifyContent:'space-between',marginBottom:6}}>
-                <label style={{fontSize:12,fontWeight:600,color:'#3a5a7a'}}>{isAr?'كلمة المرور':'Password'}</label>
-                <a href="#" style={{fontSize:12,color:'#4a90c4',textDecoration:'none'}}>{isAr?'نسيت كلمة المرور؟':'Forgot password?'}</a>
-              </div>
-              <input type="password" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" style={inp}/>
+              <label style={{fontSize:12,fontWeight:600,color:'#3a5a7a',display:'block',marginBottom:6}}>{isAr?'كلمة المرور':'Password'}</label>
+              <input type="password" required value={password} onChange={e=>setPassword(e.target.value)} placeholder="••••••••" style={inp}
+                onFocus={e=>e.target.style.borderColor='#2a6090'} onBlur={e=>e.target.style.borderColor='#b8d8ec'}/>
             </div>
-            <button type="submit" disabled={loading} style={{background:loading?'#b8d8ec':'#2a6090',color:'white',border:'none',borderRadius:25,padding:14,fontSize:15,fontWeight:700,cursor:loading?'not-allowed':'pointer',fontFamily:'inherit',marginTop:4,boxShadow:'0 4px 15px rgba(42,96,144,.3)'}}>
+            <button type="submit" disabled={loading}
+              style={{background:loading?'#b8d8ec':'#2a6090',color:'white',border:'none',borderRadius:25,padding:14,fontSize:15,fontWeight:700,cursor:loading?'not-allowed':'pointer',fontFamily:'inherit',marginTop:4,boxShadow:'0 4px 15px rgba(42,96,144,.3)'}}>
               {loading?(isAr?'جارٍ الدخول...':'Signing in...'):(isAr?'تسجيل الدخول':'Sign In')}
             </button>
           </form>
@@ -88,8 +108,9 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div style={{textAlign:'center',marginTop:20,fontSize:12,color:'#7a9ab8'}}>🔒 {isAr?'جلساتك سرية تماماً ومحمية':'Your sessions are fully confidential and protected'}</div>
-
+        <div style={{textAlign:'center',marginTop:20,fontSize:12,color:'#7a9ab8'}}>
+          🔒 {isAr?'جلساتك سرية تماماً ومحمية':'Your sessions are fully confidential'}
+        </div>
         <div style={{textAlign:'center',marginTop:14}}>
           <button onClick={()=>setLang(isAr?'en':'ar')} style={{background:'none',border:'1px solid #b8d8ec',color:'#4a90c4',fontSize:12,fontWeight:600,padding:'6px 16px',borderRadius:16,cursor:'pointer',fontFamily:'inherit'}}>
             {isAr?'English':'العربية'}
